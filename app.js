@@ -1,16 +1,13 @@
-import express from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import express from 'express';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
-import connectDB from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
-import incomeRoutes from "./routes/incomeRoutes.js";
-import expenseRoutes from "./routes/expenseRoutes.js";
-import authenticateUser from "./middlewares/authenticateUser.js";
-
-// ⚠️⚠️⚠️ Note ⚠️⚠️⚠️
-// Si vous êtes un développeur consultant ce code dans mon dépôt, veuillez créer votre propre fichier .env avec les variables d'environnement nécessaires, car il n'est pas fourni dans ce dépôt.
+import connectDB from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
+import incomeRoutes from './routes/incomeRoutes.js';
+import expenseRoutes from './routes/expenseRoutes.js';
+import authenticateUser from './middlewares/authenticateUser.js';
 
 // Configuration des variables d'environnement
 dotenv.config();
@@ -27,7 +24,7 @@ app.use(cookieParser());
 // Configuration de CORS
 app.use(
   cors({
-    origin: "https://expense-davincit.vercel.app",
+    origin: "https://expense-davincit.vercel.app", // Ajuster en fonction des besoins en production
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -38,6 +35,12 @@ app.use(
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/incomes", authenticateUser, incomeRoutes);
 app.use("/api/v1/expenses", authenticateUser, expenseRoutes);
+
+// Middleware global pour la gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
 // Démarrer le serveur
 const startServer = async () => {
@@ -53,3 +56,4 @@ const startServer = async () => {
 };
 
 startServer();
+   
